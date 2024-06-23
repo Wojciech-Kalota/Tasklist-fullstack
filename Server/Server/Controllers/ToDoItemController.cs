@@ -14,32 +14,25 @@ namespace Server.Controllers
         {
             _taskService = taskService;
         }
-        
-        [HttpPost("add-todoitem")]
-        public IActionResult AddTask([FromBody]TodoItemVM task)
-        {
-            _taskService.AddTask(task);
-            return Ok();
-        }
 
-        [HttpPut("update-todoitem/{id}")]
-        public IActionResult UpdateTask(uint id, [FromBody] TodoItemVM task)
+        [HttpPost("add-todoitem")]
+        public async Task<IActionResult> AddTask([FromBody] TodoItemVM task)
         {
-            _taskService.UpdateTask(id, task);
+            await _taskService.AddTaskAsync(task);
             return Ok();
         }
 
         [HttpGet("get-todoitems")]
-        public IActionResult GetTasks()
+        public async Task<IActionResult> GetTasks()
         {
-            var tasks = _taskService.GetAllTasks();
+            var tasks = await _taskService.GetAllTasksAsync();
             return Ok(tasks);
         }
 
         [HttpDelete("remove-todoitem/{id}")]
-        public IActionResult RemoveTask(uint id)
+        public async Task<IActionResult> RemoveTask(uint id)
         {
-            _taskService.RemoveTask(id);
+            await _taskService.RemoveTaskAsync(id);
             return Ok();
         }
     }
