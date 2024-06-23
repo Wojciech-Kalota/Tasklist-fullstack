@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Server.Data;
+using Server.Data.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,6 +13,10 @@ builder.Services.AddSwaggerGen();
 
 //Configure DbContext and ConnectionString
 builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnectionString")));
+
+//Configure the Services
+
+builder.Services.AddTransient<ToDoItemService>();
 
 var app = builder.Build();
 
