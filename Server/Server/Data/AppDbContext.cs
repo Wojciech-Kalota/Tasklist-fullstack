@@ -7,10 +7,10 @@ namespace Server.Data
     { 
         public AppDbContext(DbContextOptions<AppDbContext> options):base(options) 
         { 
-
+            Database.EnsureCreated();
         }
 
-        public DbSet<TodoItem> Tasks { get; set; }
+        public DbSet<TodoItem> ToDoItems { get; set; }
     
     }
 }
