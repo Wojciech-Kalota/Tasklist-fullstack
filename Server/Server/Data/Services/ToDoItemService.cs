@@ -1,4 +1,5 @@
-﻿using Server.Data.Models;
+﻿using Microsoft.EntityFrameworkCore;
+using Server.Data.Models;
 
 namespace Server.Data.Services
 {
@@ -11,7 +12,7 @@ namespace Server.Data.Services
             _context = context;
         }
 
-        public void AddTask(TodoItemVM task)
+        public async Task AddTaskAsync(TodoItemVM task)
         {
             var _task = new TodoItem()
             {
@@ -22,35 +23,16 @@ namespace Server.Data.Services
             };
 
             _context.ToDoItems.Add(_task);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
 
-        public void UpdateTask(uint taskID, TodoItemVM task)
+        public Task<List<TodoItem>> GetAllTasksAsync() =>
+           _context.ToDoItems.ToListAsync();
+
+        public async Task RemoveTaskAsync(uint taskID)
         {
-            var _task = _context.ToDoItems.FirstOrDefault(n => n.Id == taskID);
-
-            if(_task != null)
-            {
-                _task.Name = task.Name;
-                _task.Description = task.Description;
-                _task.IsCompleted = task.IsCompleted;
-                _task.Deadline = task.Deadline;
-                        
-                _context.SaveChanges();
-            }
-        }
-
-        public List<TodoItem> GetAllTasks() => _context.ToDoItems.ToList();
-
-        public void RemoveTask(uint taskID) 
-        {
-            var _task = _context.ToDoItems.FirstOrDefault(n => n.Id == taskID);
-
-            if(_task != null ) 
-            {
-                _context.ToDoItems.Remove(_task);
-                _context.SaveChanges();
-            }
+            var sql = $"DELETE FROM ToDoItems WHERE Id = {taskID}";
+            await _context.Database.ExecuteSqlRawAsync(sql);
         }
     }
 }
